@@ -991,16 +991,19 @@ UC/10
     </access-method>
     <table id="36" parent="23" name="order_item">
       <ObjectId>57439</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>1855</StateNumber>
     </table>
     <table id="37" parent="23" name="orders">
       <ObjectId>57447</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>1445</StateNumber>
     </table>
     <table id="38" parent="23" name="orders_order_item">
       <ObjectId>57455</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>1428</StateNumber>
     </table>

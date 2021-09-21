@@ -32,6 +32,8 @@ public interface OrderService {
 
     Set<OrderItem> findAllOrderItemsById(OrderId id);
 
+    List<Money> findAllTotals(List<OrderId> orderIds);
+
     void increaseQuantity(OrderId orderId, OrderItemId orderItemId);
 
     void decreaseQuantity(OrderId orderId, OrderItemId orderItemId);

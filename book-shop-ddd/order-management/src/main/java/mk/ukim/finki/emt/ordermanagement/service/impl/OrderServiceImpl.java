@@ -91,9 +91,9 @@ public class OrderServiceImpl implements OrderService {
     public Money changeTotalCurrency(OrderId orderId,Currency currency) {
         Order order = this.findById(orderId);
         if (currency.equals(Currency.EUR)){
-            return order.total().mkdToEur();
+            return order.getTotal().mkdToEur();
         } else {
-            return order.total();
+            return order.getTotal();
         }
     }
 
@@ -102,6 +102,16 @@ public class OrderServiceImpl implements OrderService {
     public Set<OrderItem> findAllOrderItemsById(OrderId id) {
         Order order = this.orderRepository.findById(id).orElseThrow(OrderIdNotExistsException::new);
         return order.getOrderItemsList();
+    }
+
+    @Override
+    public List<Money> findAllTotals(List<OrderId> orderIds) {
+        List<Money> totals = new ArrayList<>();
+
+        orderIds
+                .forEach(orderId -> totals.add(this.findById(orderId).getTotal()));
+
+        return totals;
     }
 
     @Override
@@ -114,6 +124,7 @@ public class OrderServiceImpl implements OrderService {
         this.deleteItem(order.getId(), orderItem.getId());
         orderItem.increaseQuantity();
         order.getOrderItemsList().add(orderItem);
+        order.setTotal();
         this.orderRepository.saveAndFlush(order);
     }
 
@@ -127,6 +138,7 @@ public class OrderServiceImpl implements OrderService {
         this.deleteItem(order.getId(), orderItem.getId());
         orderItem.decreaseQuantity();
         order.getOrderItemsList().add(orderItem);
+        order.setTotal();
         this.orderRepository.saveAndFlush(order);
     }
 

@@ -17,6 +17,8 @@ public class Book extends AbstractEntity<BookId> {
 
     private int sales = 0;
 
+    private String bookImageUrl;
+
     @AttributeOverrides({
             @AttributeOverride(name="amount", column = @Column(name = "price_amount")),
             @AttributeOverride(name="currency", column = @Column(name = "price_currency")),
@@ -26,20 +28,21 @@ public class Book extends AbstractEntity<BookId> {
     @Enumerated(value = EnumType.STRING)
     private Category category;
 
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    private Publisher publishedBy;
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    private Publisher publishedBy;
 
     public Book() {
      super(BookId.randomId(BookId.class));
     }
 
-    public static Book build(String bookName, Money price, int sales,Category category) {
+    public static Book build(String bookName, Money price, int sales,Category category, Publisher publisher, String bookImageUrl) {
         Book book = new Book();
         book.bookName = bookName;
         book.price = price;
         book.sales = sales;
         book.category = category;
-//        book.publishedBy = publisher;
+        book.publishedBy = publisher;
+        book.bookImageUrl = bookImageUrl;
         return book;
     }
 

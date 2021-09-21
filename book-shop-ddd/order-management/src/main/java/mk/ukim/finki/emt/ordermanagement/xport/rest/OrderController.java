@@ -44,8 +44,10 @@ public class OrderController {
 
     @GetMapping("/total/{id}")
     public Money getTotalPrice(@PathVariable OrderId id) {
-        return this.orderService.findById(id).total();
+        Order order = this.orderService.findById(id);
+        return order.getTotal();
     }
+
 
     @GetMapping("/change-total-currency/{id}")
     public Money getTotalPriceWithDifferentCurrency(@PathVariable OrderId id, @RequestParam Currency currency) {

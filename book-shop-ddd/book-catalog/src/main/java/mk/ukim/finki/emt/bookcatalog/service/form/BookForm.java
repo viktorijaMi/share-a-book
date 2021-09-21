@@ -19,6 +19,7 @@ public class BookForm {
 
     private Category category;
 
-//    @NotNull
-//    private PublisherId publisherId;
+    private Publisher publisher;
+
+    private String bookImageUrl;
 }

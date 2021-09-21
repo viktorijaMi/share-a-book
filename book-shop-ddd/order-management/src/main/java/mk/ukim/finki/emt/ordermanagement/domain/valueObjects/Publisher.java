@@ -3,7 +3,7 @@ package mk.ukim.finki.emt.ordermanagement.domain.valueObjects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.NonNull;
+import mk.ukim.finki.emt.sharedkernel.domain.base.Address;
 import mk.ukim.finki.emt.sharedkernel.domain.base.ValueObject;
 
 @Getter

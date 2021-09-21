@@ -31,6 +31,12 @@ public class Order extends AbstractEntity<OrderId> {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<OrderItem> orderItemsList;
 
+    @AttributeOverrides({
+            @AttributeOverride(name="amount", column = @Column(name = "total_amount")),
+            @AttributeOverride(name="currency", column = @Column(name = "total_currency")),
+    })
+    private Money total;
+
 //    @AttributeOverride(name="id", column = @Column(name = "user_id", nullable=false))
 //    private UserId userId;
 
@@ -40,6 +46,7 @@ public class Order extends AbstractEntity<OrderId> {
         this.orderState = OrderState.CREATED;
         this.currency = Currency.MKD;
         this.orderItemsList = new HashSet<>();
+        setTotal();
     }
 
     public Order(Instant now, @NotNull Currency currency) {
@@ -48,6 +55,7 @@ public class Order extends AbstractEntity<OrderId> {
         this.orderState = OrderState.PROCESSING;
         this.currency = currency;
         this.orderItemsList = new HashSet<>();
+        setTotal();
     }
 
     public void setOrderCurrency(Currency c){
@@ -58,8 +66,8 @@ public class Order extends AbstractEntity<OrderId> {
         this.orderState = orderState;
     }
 
-    public Money total() {
-        return orderItemsList.stream()
+    public void setTotal() {
+        this.total = orderItemsList.stream()
                     .map(OrderItem::subtotal)
                     .reduce(new Money(currency, 0), Money::add);
     }
@@ -69,11 +77,13 @@ public class Order extends AbstractEntity<OrderId> {
         Objects.requireNonNull(book, "book must not be null");
         OrderItem item = new OrderItem(book.getId(), book.getPrice(), quantity, book.getName());
         orderItemsList.add(item);
+        setTotal();
         return item;
     }
 
     public void removeItem(@NonNull OrderItemId orderItemId) {
         Objects.requireNonNull(orderItemId, "Order item id must not be null");
         orderItemsList.removeIf(v -> v.getId().equals(orderItemId));
+        setTotal();
     }
 }
