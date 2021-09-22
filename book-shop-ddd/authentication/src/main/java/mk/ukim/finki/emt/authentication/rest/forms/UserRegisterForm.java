@@ -1,9 +1,7 @@
 package mk.ukim.finki.emt.authentication.rest.forms;
 
 import lombok.Data;
-import mk.ukim.finki.emt.authentication.domain.model.Role;
-import mk.ukim.finki.emt.authentication.domain.valueObjects.Password;
-import mk.ukim.finki.emt.sharedkernel.domain.base.Address;
+import mk.ukim.finki.emt.sharedkernel.domain.user.Address;
 
 @Data
 public class UserRegisterForm {
@@ -14,9 +12,9 @@ public class UserRegisterForm {
 
     public String role;
 
-    public Address billingAddress;
+    public Address address;
 
-    public Password password;
+    public String password;
 
-    public Password confirmPassword;
+    public String confirmPassword;
 }

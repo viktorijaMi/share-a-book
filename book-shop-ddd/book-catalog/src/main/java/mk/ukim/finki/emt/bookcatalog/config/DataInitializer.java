@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import mk.ukim.finki.emt.bookcatalog.domain.models.Book;
 import mk.ukim.finki.emt.bookcatalog.domain.models.Publisher;
 import mk.ukim.finki.emt.bookcatalog.domain.repository.BookRepository;
-import mk.ukim.finki.emt.bookcatalog.domain.valueObjects.Address;
 import mk.ukim.finki.emt.bookcatalog.domain.valueObjects.Category;
 import mk.ukim.finki.emt.bookcatalog.xport.rest.BookResource;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Currency;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Money;
+import mk.ukim.finki.emt.sharedkernel.domain.user.Address;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

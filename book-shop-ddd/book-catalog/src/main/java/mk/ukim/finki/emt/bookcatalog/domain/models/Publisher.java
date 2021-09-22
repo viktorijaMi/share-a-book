@@ -2,8 +2,8 @@ package mk.ukim.finki.emt.bookcatalog.domain.models;
 
 import lombok.Getter;
 import lombok.NonNull;
-import mk.ukim.finki.emt.bookcatalog.domain.valueObjects.Address;
 import mk.ukim.finki.emt.sharedkernel.domain.base.AbstractEntity;
+import mk.ukim.finki.emt.sharedkernel.domain.user.Address;
 
 import javax.persistence.*;
 

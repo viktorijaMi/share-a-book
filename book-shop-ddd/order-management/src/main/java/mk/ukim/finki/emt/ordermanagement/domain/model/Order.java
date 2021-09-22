@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.BookId;
+import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.sharedkernel.domain.base.AbstractEntity;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Currency;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Money;
+import mk.ukim.finki.emt.sharedkernel.domain.user.Address;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -37,8 +39,18 @@ public class Order extends AbstractEntity<OrderId> {
     })
     private Money total;
 
-//    @AttributeOverride(name="id", column = @Column(name = "user_id", nullable=false))
-//    private UserId userId;
+    @AttributeOverride(name="id", column = @Column(name = "createdBy_id", nullable=false))
+    private UserId createdById;
+
+    private String createdBy_username;
+
+    @AttributeOverrides({
+            @AttributeOverride(name="street", column = @Column(name = "address_street")),
+            @AttributeOverride(name="streetNumber", column = @Column(name = "address_street_number")),
+            @AttributeOverride(name="city", column = @Column(name = "address_city")),
+            @AttributeOverride(name="country", column = @Column(name = "address_country")),
+    })
+    private Address createdBy_address;
 
     public Order() {
         super(OrderId.randomId(OrderId.class));
@@ -46,8 +58,24 @@ public class Order extends AbstractEntity<OrderId> {
         this.orderState = OrderState.CREATED;
         this.currency = Currency.MKD;
         this.orderItemsList = new HashSet<>();
+        this.createdById = null;
+        this.createdBy_username = "";
+        this.createdBy_address = new Address("", 0, "","");
         setTotal();
     }
+
+    public Order(UserId userId, String username, Address address) {
+        super(OrderId.randomId(OrderId.class));
+        this.orderDate = Instant.now();
+        this.orderState = OrderState.CREATED;
+        this.currency = Currency.MKD;
+        this.orderItemsList = new HashSet<>();
+        this.createdById = userId;
+        this.createdBy_username = username;
+        this.createdBy_address = address;
+        setTotal();
+    }
+
 
     public Order(Instant now, @NotNull Currency currency) {
         super(OrderId.randomId(OrderId.class));
@@ -83,7 +111,7 @@ public class Order extends AbstractEntity<OrderId> {
 
     public void removeItem(@NonNull OrderItemId orderItemId) {
         Objects.requireNonNull(orderItemId, "Order item id must not be null");
-        orderItemsList.removeIf(v -> v.getId().equals(orderItemId));
+        orderItemsList.removeIf(v -> v.getId().getId().equals(orderItemId.getId()));
         setTotal();
     }
 }

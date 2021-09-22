@@ -6,9 +6,13 @@ import mk.ukim.finki.emt.ordermanagement.domain.model.OrderId;
 import mk.ukim.finki.emt.ordermanagement.domain.model.OrderItem;
 import mk.ukim.finki.emt.ordermanagement.domain.model.OrderItemId;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
+import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
+import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.ordermanagement.service.OrderService;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderForm;
+import mk.ukim.finki.emt.ordermanagement.service.forms.OrderIdsForm;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderItemForm;
+import mk.ukim.finki.emt.ordermanagement.service.forms.UserForm;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Currency;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Money;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +36,14 @@ public class OrderController {
         return this.orderService.findAll();
     }
 
-    @GetMapping("/new-order")
-    public OrderId createNewOrder() {
-        return this.orderService.createNewOrder();
+    @GetMapping("/orders/{id}")
+    public List<Order> findAllByUserId(@PathVariable UserId id) {
+        return this.orderService.findAllByUserId(id);
+    }
+
+    @PostMapping("/new-order")
+    public OrderId createNewOrder(@RequestBody UserForm userForm) {
+        return this.orderService.createNewOrder(userForm);
     }
 
     @GetMapping("/items/{id}")
@@ -88,9 +97,14 @@ public class OrderController {
     }
 
 
-    @PostMapping("/delete")
-    public void deleteItem(@RequestParam OrderId id, @RequestParam OrderItemId orderItemId) {
-        this.orderService.deleteItem(id, orderItemId);
+    @PostMapping("/delete-item")
+    public void deleteItem(@RequestBody OrderIdsForm orderIds) {
+        this.orderService.deleteItem(orderIds.getOrderId(), orderIds.getOrderItemId());
+    }
+
+    @PostMapping("/cancel-order/{id}")
+    public void deleteItem(@PathVariable OrderId id) {
+        this.orderService.cancelOrder(id);
     }
 
 }

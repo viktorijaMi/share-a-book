@@ -1,5 +1,8 @@
 package mk.ukim.finki.emt.authentication.domain.valueObjects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.NonNull;
 import mk.ukim.finki.emt.sharedkernel.domain.base.ValueObject;
 
@@ -7,6 +10,7 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
+@Getter
 public class Password implements ValueObject {
 
     private final String password;
@@ -15,7 +19,8 @@ public class Password implements ValueObject {
         this.password = "";
     }
 
-    public Password(@NonNull String password) {
+    @JsonCreator
+    public Password(@JsonProperty("password") @NonNull String password) {
         this.password = password;
     }
 

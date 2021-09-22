@@ -1,5 +1,6 @@
 package mk.ukim.finki.emt.sharedkernel.domain.base;
 
+
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.data.util.ProxyUtils;

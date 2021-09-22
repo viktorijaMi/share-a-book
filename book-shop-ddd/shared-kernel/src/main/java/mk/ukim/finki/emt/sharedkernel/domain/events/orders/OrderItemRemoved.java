@@ -1,5 +1,6 @@
 package mk.ukim.finki.emt.sharedkernel.domain.events.orders;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import mk.ukim.finki.emt.sharedkernel.domain.config.TopicHolder;
 import mk.ukim.finki.emt.sharedkernel.domain.events.DomainEvent;
@@ -14,7 +15,9 @@ public class OrderItemRemoved extends DomainEvent {
         super(TopicHolder.TOPIC_ORDER_ITEM_REMOVED);
     }
 
-    public OrderItemRemoved(String topic, String bookId, int quantity) {
+    public OrderItemRemoved(
+            @JsonProperty("bookId") String bookId,
+            @JsonProperty("quantity") int quantity) {
         super(TopicHolder.TOPIC_ORDER_ITEM_REMOVED);
         this.bookId = bookId;
         this.quantity = quantity;

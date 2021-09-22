@@ -7,9 +7,12 @@ import mk.ukim.finki.emt.ordermanagement.domain.exceptions.OrderItemIdNotExistsE
 import mk.ukim.finki.emt.ordermanagement.domain.model.*;
 import mk.ukim.finki.emt.ordermanagement.domain.repository.OrderRepository;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
+import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
+import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.ordermanagement.service.OrderService;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderForm;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderItemForm;
+import mk.ukim.finki.emt.ordermanagement.service.forms.UserForm;
 import mk.ukim.finki.emt.sharedkernel.domain.events.orders.OrderItemCreated;
 import mk.ukim.finki.emt.sharedkernel.domain.events.orders.OrderItemRemoved;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Currency;
@@ -36,29 +39,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderId placeOrder(OrderId orderId,Currency currency) {
-//        Objects.requireNonNull(orderForm, "order must not be null");
-//        var set = validator.validate(orderForm);
-//        if (set.size() > 0) {
-//            throw new ConstraintViolationException("The order form is not valid", set);
-//        }
-
         Order newOrder = this.findById(orderId);
         newOrder.setOrderCurrency(currency);
         newOrder.changeOrderState(OrderState.PROCESSING);
         return newOrder.getId();
     }
 
-//    private Order toDomainObject(OrderForm orderForm){
-//        var order = new Order(Instant.now(), orderForm.getCurrency());
-//        orderForm.getItems().forEach(item -> order.addItem(item.getBook(), item.getQuantity()));
-//        return order;
-//    }
 
     @Override
     public List<Order> findAll() {
         return this.orderRepository.findAll();
     }
 
+    @Override
+    public List<Order> findAllByUserId(UserId userId) {
+        return this.orderRepository.findAllByCreatedById(userId);
+    }
 
 
     @Override
@@ -67,11 +63,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderId createNewOrder() {
-        Order order = new Order();
+    public OrderId createNewOrder(UserForm userForm) {
+        Order order = new Order(userForm.getId(), userForm.getUsername(), userForm.getAddress());
         this.orderRepository.save(order);
         return order.getId();
     }
+
 
     @Override
     public OrderItem addItem(OrderId orderId, OrderItemForm orderItemForm) throws OrderIdNotExistsException {
@@ -104,15 +101,6 @@ public class OrderServiceImpl implements OrderService {
         return order.getOrderItemsList();
     }
 
-    @Override
-    public List<Money> findAllTotals(List<OrderId> orderIds) {
-        List<Money> totals = new ArrayList<>();
-
-        orderIds
-                .forEach(orderId -> totals.add(this.findById(orderId).getTotal()));
-
-        return totals;
-    }
 
     @Override
     public void increaseQuantity(OrderId orderId, OrderItemId orderItemId) {
@@ -146,7 +134,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteItem(OrderId orderId, OrderItemId orderItemId) throws OrderIdNotExistsException, OrderItemIdNotExistsException {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderIdNotExistsException::new);
+        OrderItem orderItem = order.getOrderItemsList()
+                .stream()
+                .filter(orderItem1 -> orderItem1.getId().getId().equals(orderItemId.getId())).findFirst().orElseThrow(OrderItemIdNotExistsException::new);
         order.removeItem(orderItemId);
+        domainEventPublisher.publish(new OrderItemRemoved(orderItem.getBookId().getId(), orderItem.getQuantity()));
+        orderRepository.saveAndFlush(order);
+    }
+
+    @Override
+    public void cancelOrder(OrderId orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderIdNotExistsException::new);
+        order.changeOrderState(OrderState.CANCELLED);
         orderRepository.saveAndFlush(order);
     }
 }

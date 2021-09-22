@@ -12,7 +12,7 @@ public class OrderItemId extends DomainObjectId {
     }
 
     @JsonCreator
-    public OrderItemId(@JsonProperty("orderItemId")@NonNull String uuid) {
+    public OrderItemId(@NonNull String uuid) {
         super(uuid);
     }
 

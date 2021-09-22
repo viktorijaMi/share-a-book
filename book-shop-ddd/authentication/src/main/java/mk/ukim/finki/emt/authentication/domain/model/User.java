@@ -3,13 +3,10 @@ package mk.ukim.finki.emt.authentication.domain.model;
 import lombok.Getter;
 import mk.ukim.finki.emt.authentication.domain.valueObjects.Password;
 import mk.ukim.finki.emt.sharedkernel.domain.base.AbstractEntity;
-import mk.ukim.finki.emt.sharedkernel.domain.base.Address;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import mk.ukim.finki.emt.sharedkernel.domain.user.Address;
+import mk.ukim.finki.emt.sharedkernel.domain.user.Role;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
 
 @Entity
 @Getter
@@ -21,6 +18,7 @@ public class User extends AbstractEntity<UserId> {
     private String email;
 
     @Column(name = "user_role")
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 
     @AttributeOverrides({
@@ -29,7 +27,7 @@ public class User extends AbstractEntity<UserId> {
             @AttributeOverride(name="city", column = @Column(name = "address_city")),
             @AttributeOverride(name="country", column = @Column(name = "address_country")),
     })
-    private Address billingAddress;
+    private Address address;
 
     private Password password;
 
@@ -42,7 +40,7 @@ public class User extends AbstractEntity<UserId> {
         user.username = username;
         user.email = email;
         user.role = role;
-        user.billingAddress = address;
+        user.address = address;
         user.password = password;
         return user;
     }
