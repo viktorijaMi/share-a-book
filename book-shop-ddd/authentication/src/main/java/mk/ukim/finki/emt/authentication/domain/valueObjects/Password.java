@@ -22,6 +22,11 @@ public class Password implements ValueObject {
     @JsonCreator
     public Password(@JsonProperty("password") @NonNull String password) {
         this.password = password;
+        checkPassword();
+    }
+
+    public boolean checkPassword() {
+        return this.password.matches(".*[0-9].*") && this.password.matches(".*[a-zA-Z].*]") && this.password.length() >= 8;
     }
 
     @Override

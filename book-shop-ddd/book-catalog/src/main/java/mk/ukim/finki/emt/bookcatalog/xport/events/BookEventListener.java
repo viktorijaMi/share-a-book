@@ -38,14 +38,4 @@ public class BookEventListener {
             e.printStackTrace();
         }
     }
-
-//    @KafkaListener(topics = TopicHolder.CHANGE_CURRENCY, groupId = "bookCatalog")
-//    public void consumeChangeCurrency(@Payload(required = false) String jsonMessage) {
-//        try {
-//            ChangeCurrency event = DomainEvent.fromJson(jsonMessage, ChangeCurrency.class);
-//            bookService.changeCurrency(event.getCurrency());
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

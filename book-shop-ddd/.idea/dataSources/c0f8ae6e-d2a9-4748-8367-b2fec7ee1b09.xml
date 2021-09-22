@@ -991,6 +991,7 @@ UC/10
     </access-method>
     <table id="36" parent="23" name="shop_users">
       <ObjectId>67283</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>2663</StateNumber>
     </table>
