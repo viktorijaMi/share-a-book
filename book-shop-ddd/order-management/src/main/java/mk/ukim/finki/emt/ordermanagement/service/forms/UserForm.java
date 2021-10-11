@@ -17,4 +17,10 @@ public class UserForm {
 
     @NotNull
     private Address address;
+
+    public UserForm(UserId id, String username, Address userAddress) {
+        this.id = id;
+        this.username = username;
+        this.address = userAddress;
+    }
 }

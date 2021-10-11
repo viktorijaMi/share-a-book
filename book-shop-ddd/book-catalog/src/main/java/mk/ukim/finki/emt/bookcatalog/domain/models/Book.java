@@ -19,6 +19,8 @@ public class Book extends AbstractEntity<BookId> {
 
     private String bookImageUrl;
 
+    private int quantity;
+
     @AttributeOverrides({
             @AttributeOverride(name="amount", column = @Column(name = "price_amount")),
             @AttributeOverride(name="currency", column = @Column(name = "price_currency")),
@@ -35,7 +37,7 @@ public class Book extends AbstractEntity<BookId> {
      super(BookId.randomId(BookId.class));
     }
 
-    public static Book build(String bookName, Money price, int sales,Category category, Publisher publisher, String bookImageUrl) {
+    public static Book build(String bookName, Money price, int sales,Category category, Publisher publisher, String bookImageUrl, int quantity) {
         Book book = new Book();
         book.bookName = bookName;
         book.price = price;
@@ -43,6 +45,7 @@ public class Book extends AbstractEntity<BookId> {
         book.category = category;
         book.publishedBy = publisher;
         book.bookImageUrl = bookImageUrl;
+        book.quantity = quantity;
         return book;
     }
 

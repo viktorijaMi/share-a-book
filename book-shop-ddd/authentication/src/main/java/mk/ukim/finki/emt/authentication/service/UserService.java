@@ -4,10 +4,11 @@ import mk.ukim.finki.emt.authentication.domain.model.User;
 import mk.ukim.finki.emt.authentication.domain.model.UserId;
 import mk.ukim.finki.emt.authentication.rest.forms.UserLoginForm;
 import mk.ukim.finki.emt.authentication.rest.forms.UserRegisterForm;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * This method returns the user with id userId
@@ -15,6 +16,12 @@ public interface UserService {
      * @return
      */
     User findById(UserId userId);
+    /**
+     * This method returns the user with username username
+     * @param username
+     * @return
+     */
+    User findByUsername(String username);
 
     /**
      * This method returns the userId of the registered user with data from userRegisterForm
@@ -31,4 +38,5 @@ public interface UserService {
      * @return
      */
     User login(UserLoginForm userLoginForm);
+
 }

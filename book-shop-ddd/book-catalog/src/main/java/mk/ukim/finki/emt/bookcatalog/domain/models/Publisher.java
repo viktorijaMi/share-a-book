@@ -1,5 +1,6 @@
 package mk.ukim.finki.emt.bookcatalog.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.NonNull;
 import mk.ukim.finki.emt.sharedkernel.domain.base.AbstractEntity;
@@ -28,8 +29,10 @@ public class Publisher extends AbstractEntity<PublisherId> {
         this.address = new Address("",0,"", "");
     }
 
+    @JsonCreator
     public Publisher(@NonNull String name,
                      @NonNull Address address) {
+        super(PublisherId.randomId(PublisherId.class));
         this.name = name;
         this.address =address;
     }

@@ -7,7 +7,6 @@ import mk.ukim.finki.emt.ordermanagement.domain.exceptions.OrderItemIdNotExistsE
 import mk.ukim.finki.emt.ordermanagement.domain.model.*;
 import mk.ukim.finki.emt.ordermanagement.domain.repository.OrderRepository;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
-import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.ordermanagement.service.OrderService;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderForm;
@@ -35,12 +34,12 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final DomainEventPublisher domainEventPublisher;
-    private final Validator validator;
 
     @Override
     public OrderId placeOrder(OrderId orderId,Currency currency) {
         Order newOrder = this.findById(orderId);
         newOrder.setOrderCurrency(currency);
+        newOrder.setTotal();
         newOrder.changeOrderState(OrderState.PROCESSING);
         return newOrder.getId();
     }
@@ -78,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderItemAlreadyExistsException(String.format("Book with name %s already in cart", orderItemForm.getBook().getName()));
         } else {
             OrderItem orderItem = order.addItem(orderItemForm.getBook(), orderItemForm.getQuantity());
-            orderRepository.saveAndFlush(order);
+            this.orderRepository.saveAndFlush(order);
             domainEventPublisher.publish(new OrderItemCreated(orderItemForm.getBook().getId().getId(), orderItemForm.getQuantity()));
             return orderItem;
         }
@@ -125,9 +124,11 @@ public class OrderServiceImpl implements OrderService {
                 .findFirst().orElseThrow(OrderItemIdNotExistsException::new);
         this.deleteItem(order.getId(), orderItem.getId());
         orderItem.decreaseQuantity();
-        order.getOrderItemsList().add(orderItem);
-        order.setTotal();
-        this.orderRepository.saveAndFlush(order);
+        if (orderItem.getQuantity() > 0) {
+            order.getOrderItemsList().add(orderItem);
+            order.setTotal();
+            this.orderRepository.saveAndFlush(order);
+        }
     }
 
 
@@ -146,6 +147,16 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(OrderId orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderIdNotExistsException::new);
         order.changeOrderState(OrderState.CANCELLED);
+        for (OrderItem orderItem : order.getOrderItemsList()) {
+            domainEventPublisher.publish(new OrderItemRemoved(orderItem.getBookId().getId(), orderItem.getQuantity()));
+        }
+        orderRepository.saveAndFlush(order);
+    }
+
+    @Override
+    public void orderProcessed(OrderId orderId, OrderState orderState) {
+        Order order = this.orderRepository.findById(orderId).orElseThrow(OrderIdNotExistsException::new);
+        order.changeOrderState(orderState);
         orderRepository.saveAndFlush(order);
     }
 }

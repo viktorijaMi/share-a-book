@@ -1,5 +1,6 @@
 package mk.ukim.finki.emt.bookcatalog.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.NonNull;
 import mk.ukim.finki.emt.sharedkernel.domain.base.DomainObjectId;
 
@@ -8,6 +9,7 @@ public class PublisherId extends DomainObjectId {
         super(PublisherId.randomId(PublisherId.class).getId());
     }
 
+    @JsonCreator
     public PublisherId(@NonNull String uuid) {
         super(uuid);
     }

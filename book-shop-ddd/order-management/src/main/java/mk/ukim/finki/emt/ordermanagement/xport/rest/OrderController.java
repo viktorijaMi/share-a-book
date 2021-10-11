@@ -1,22 +1,14 @@
 package mk.ukim.finki.emt.ordermanagement.xport.rest;
 
 import lombok.AllArgsConstructor;
-import mk.ukim.finki.emt.ordermanagement.domain.model.Order;
-import mk.ukim.finki.emt.ordermanagement.domain.model.OrderId;
-import mk.ukim.finki.emt.ordermanagement.domain.model.OrderItem;
-import mk.ukim.finki.emt.ordermanagement.domain.model.OrderItemId;
-import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
-import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
+import mk.ukim.finki.emt.ordermanagement.domain.model.*;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.ordermanagement.service.OrderService;
-import mk.ukim.finki.emt.ordermanagement.service.forms.OrderForm;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderIdsForm;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderItemForm;
 import mk.ukim.finki.emt.ordermanagement.service.forms.UserForm;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Currency;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Money;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -57,6 +49,11 @@ public class OrderController {
         return order.getTotal();
     }
 
+    @GetMapping("/order-states")
+    public List<OrderState> getAllOrderStates() {
+        return Arrays.asList(OrderState.values());
+    }
+
 
     @GetMapping("/change-total-currency/{id}")
     public Money getTotalPriceWithDifferentCurrency(@PathVariable OrderId id, @RequestParam Currency currency) {
@@ -80,10 +77,10 @@ public class OrderController {
         return currencies;
     }
 
-
     @PostMapping("/add/{id}")
     public OrderItem addItem(@PathVariable OrderId id, @RequestBody OrderItemForm orderItemForm) {
-        return this.orderService.addItem(id, orderItemForm);
+        OrderItem orderItem =  this.orderService.addItem(id, orderItemForm);
+        return orderItem;
     }
 
     @PostMapping("/increase-qty/{orderId}")
@@ -96,7 +93,6 @@ public class OrderController {
         this.orderService.decreaseQuantity(orderId, orderItemId);
     }
 
-
     @PostMapping("/delete-item")
     public void deleteItem(@RequestBody OrderIdsForm orderIds) {
         this.orderService.deleteItem(orderIds.getOrderId(), orderIds.getOrderItemId());
@@ -107,4 +103,8 @@ public class OrderController {
         this.orderService.cancelOrder(id);
     }
 
+    @PostMapping("/order-processed/{id}")
+    public void changeOrderState(@PathVariable OrderId id) {
+        this.orderService.orderProcessed(id, OrderState.PROCESSED);
+    }
 }

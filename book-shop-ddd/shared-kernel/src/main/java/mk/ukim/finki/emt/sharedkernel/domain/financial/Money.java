@@ -1,5 +1,7 @@
 package mk.ukim.finki.emt.sharedkernel.domain.financial;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NonNull;
 import mk.ukim.finki.emt.sharedkernel.domain.base.ValueObject;
@@ -23,12 +25,18 @@ public class Money implements ValueObject {
         this.amount = 0.0;
     }
 
+    @JsonCreator
+    public Money(@JsonProperty("price") double amount) {
+        this.amount = amount;
+        this.currency = Currency.MKD;
+    }
+
     public Money(@NonNull Currency currency,@NonNull double amount) {
         this.currency = currency;
         this.amount = amount;
     }
 
-    public static Money valueOf(Currency currency, int amount) {
+    public static Money valueOf(Currency currency, double amount) {
         return new Money(currency, amount);
     }
 

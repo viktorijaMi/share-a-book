@@ -13,13 +13,15 @@ public class BookForm {
 
     private String bookName;
 
-    private Money price;
+    private double price;
 
     private int sales;
 
+    private int quantity;
+
     private Category category;
 
-    private Publisher publisher;
+    private String publisher;
 
     private String bookImageUrl;
 }

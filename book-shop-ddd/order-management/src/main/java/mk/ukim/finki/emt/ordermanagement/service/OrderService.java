@@ -2,12 +2,8 @@ package mk.ukim.finki.emt.ordermanagement.service;
 
 import mk.ukim.finki.emt.ordermanagement.domain.exceptions.OrderIdNotExistsException;
 import mk.ukim.finki.emt.ordermanagement.domain.exceptions.OrderItemIdNotExistsException;
-import mk.ukim.finki.emt.ordermanagement.domain.model.Order;
-import mk.ukim.finki.emt.ordermanagement.domain.model.OrderId;
-import mk.ukim.finki.emt.ordermanagement.domain.model.OrderItem;
-import mk.ukim.finki.emt.ordermanagement.domain.model.OrderItemId;
+import mk.ukim.finki.emt.ordermanagement.domain.model.*;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
-import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderForm;
 import mk.ukim.finki.emt.ordermanagement.service.forms.OrderItemForm;
@@ -105,4 +101,9 @@ public interface OrderService {
      * @param orderId
      */
     void cancelOrder(OrderId orderId);
+    /**
+     * This method changes the order state to processed
+     * @params orderId, state
+     */
+    void orderProcessed(OrderId orderId, OrderState state);
 }

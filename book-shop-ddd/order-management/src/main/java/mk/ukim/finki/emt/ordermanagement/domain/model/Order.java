@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.Book;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.BookId;
-import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.User;
 import mk.ukim.finki.emt.ordermanagement.domain.valueObjects.UserId;
 import mk.ukim.finki.emt.sharedkernel.domain.base.AbstractEntity;
 import mk.ukim.finki.emt.sharedkernel.domain.financial.Currency;
